@@ -1,2 +1,2 @@
 # General-Number-Field-Sieve
-C++ realisation of gnfc algorithm
+C++ realisation of gnfs algorithm
