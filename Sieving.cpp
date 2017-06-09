@@ -33,11 +33,11 @@ void intersection(Vec<Pair<long,long>>::iterator begin1, Vec<Pair<long,long>>::i
     }
 }
 
-inline ZZ rSieveArrayInit(long a, long b, const ZZ& m, const ZZX& poly, long d) {
+inline ZZ AplusMxB(long a, long b, const ZZ &m, const ZZX &poly, long d) {
     return abs(a + b * m);
 }
 
-inline ZZ aSieveArrayInit(long a, long b, const ZZ& m, const ZZX& poly, long d) {
+inline ZZ norm(long a, long b, const ZZ &m, const ZZX &poly, long d) {
     ZZ res;
     for (long i = 0L; i <= d; ++i) {
         res += coeff(poly, i) * pow(a, i) * pow(-b, d - i);
@@ -83,8 +83,8 @@ void sieve(Vec<Pair<long, long>>& pairs, const Vec<Pair<ZZ, ZZ>>& FB, Vec<ZZ>& s
 
 Vec<Pair<long, long>> sieving(const Vec<Pair<ZZ, ZZ>>& RFB, const Vec<Pair<ZZ, ZZ>>& AFB,
                           long B, const ZZ& m, const ZZX& poly, long degree, long minPairAmount) {
-    ZZ (*prSieveArrayInit) (long, long, const ZZ&, const ZZX&, long) = &rSieveArrayInit;
-    ZZ (*paSieveArrayInit) (long, long, const ZZ&, const ZZX&, long) = &aSieveArrayInit;
+    ZZ (*prSieveArrayInit) (long, long, const ZZ&, const ZZX&, long) = &AplusMxB;
+    ZZ (*paSieveArrayInit) (long, long, const ZZ&, const ZZX&, long) = &norm;
     bool (*cmp)(const Pair<long, long>&, const Pair<long, long>&) = &compare;
 
     Vec<Pair<long, long>> answer;

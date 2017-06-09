@@ -57,7 +57,7 @@ Vec<Pair<ZZ, ZZ>> RFBGen(const ZZ &m, const ZZ &z) {
 
 Vec<Pair<ZZ, ZZ>> AFBGen(const ZZ &m, const ZZ &z, const ZZX &poly) {
     Vec<Pair<ZZ, ZZ>> AFB;
-    ZZ border = NextPrime(3.4 * z);
+    ZZ border = NextPrime(3 * z);
     ZZ prime = ZZ(2);
     while (prime < border) {
         for (ZZ q = ZZ(0); q < prime; ++q) {
