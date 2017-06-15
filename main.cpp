@@ -20,7 +20,6 @@
 #include "fillExpMatrix.h"
 #include "gauss.h"
 #include "fieldsFinder.h"
-#include "ShanksTonelli.h"
 
 using namespace NTL;
 
@@ -67,9 +66,10 @@ int main( ) {
     std::cout << "pairs, multiplication of which gives a square: " << resanswer << '\n';
 
     Vec<ZZ> fields;
-    fieldsFinder(fields, poly, n);
+    Vec<ZZ_pX> roots;
+    fieldsFinder(fields, roots, poly, resanswer, n, degree);
     std::cout << "fields: " << fields << '\n';
-    std::cout << ShanksTonelli(fields[0], resanswer, poly, degree);
+    std::cout << "roots: " << roots << '\n';
 
     auto diff = std::chrono::system_clock::now() - start;
     auto sec = std::chrono::duration_cast<std::chrono::seconds>(diff);
