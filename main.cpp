@@ -19,6 +19,8 @@
 #include "sieving.h"
 #include "fillExpMatrix.h"
 #include "gauss.h"
+#include "fieldsFinder.h"
+#include "ShanksTonelli.h"
 
 using namespace NTL;
 
@@ -55,15 +57,19 @@ int main( ) {
     vec_GF2 res;
     res.SetLength(answer.length());
     gauss(matrix, res);
-    std::cout << res << '\n';
+    std::cout << "answer: " << res << '\n';
     Vec<Pair<long, long>> resanswer;
     for (long i = 0; i < res.length(); ++i) {
         if (!IsZero(res[i])) {
             resanswer.append(answer[i]);
         }
     }
-    std::cout << resanswer << '\n';
+    std::cout << "pairs, multiplication of which gives a square: " << resanswer << '\n';
 
+    Vec<ZZ> fields;
+    fieldsFinder(fields, poly, n);
+    std::cout << "fields: " << fields << '\n';
+    std::cout << ShanksTonelli(fields[0], resanswer, poly, degree);
 
     auto diff = std::chrono::system_clock::now() - start;
     auto sec = std::chrono::duration_cast<std::chrono::seconds>(diff);

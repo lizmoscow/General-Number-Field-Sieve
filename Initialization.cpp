@@ -73,7 +73,7 @@ Vec<Pair<ZZ, ZZ>> AFBGen(const ZZ &m, const ZZ &z, const ZZX &poly) {
 Vec<Pair<ZZ, ZZ>> QCFBGen(const ZZ& m, const ZZ& z, const ZZX& poly) {
     Vec<Pair<ZZ, ZZ>> QCFB;
     ZZ prime = NextPrime(3.4 * z);
-    ZZ border = prime + z / 2;
+    ZZ border = prime + TruncToZZ(pow(conv<RR>(z), conv<RR>(4.0) / 5.0));
     while (prime < border) {
         for (ZZ q = ZZ(0); q < prime; ++q) {
             if (IsZero(eval(poly, q) % prime)) {
