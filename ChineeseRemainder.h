@@ -1,0 +1,10 @@
+//
+// Created by Moskovskaya Elizaveta on 16/06/2017.
+//
+
+#ifndef GENERAL_NUMBER_FIELD_SIEVE_CHINEESEREMAINDER_H
+#define GENERAL_NUMBER_FIELD_SIEVE_CHINEESEREMAINDER_H
+
+NTL::ZZ ChineeseRemainder(NTL::Vec<NTL::ZZ> &fields, NTL::Vec<NTL::ZZ_pX> &roots, NTL::ZZ &m, NTL::ZZ&n);
+
+#endif //GENERAL_NUMBER_FIELD_SIEVE_CHINEESEREMAINDER_H

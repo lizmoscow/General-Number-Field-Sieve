@@ -20,6 +20,9 @@
 #include "fillExpMatrix.h"
 #include "gauss.h"
 #include "fieldsFinder.h"
+#include "ShanksTonelli.h"
+#include "ChineeseRemainder.h"
+#include "computeY.h"
 
 using namespace NTL;
 
@@ -57,19 +60,80 @@ int main( ) {
     res.SetLength(answer.length());
     gauss(matrix, res);
     std::cout << "answer: " << res << '\n';
-    Vec<Pair<long, long>> resanswer;
+    Vec<Pair<long, long>> result;
     for (long i = 0; i < res.length(); ++i) {
         if (!IsZero(res[i])) {
-            resanswer.append(answer[i]);
+            result.append(answer[i]);
         }
     }
-    std::cout << "pairs, multiplication of which gives a square: " << resanswer << '\n';
+    std::cout << "pairs, multiplication of which gives a square: " << result << '\n';
 
     Vec<ZZ> fields;
     Vec<ZZ_pX> roots;
-    fieldsFinder(fields, roots, poly, resanswer, n, degree);
+    fieldsFinder(fields, roots, poly, result, n, degree);
     std::cout << "fields: " << fields << '\n';
     std::cout << "roots: " << roots << '\n';
+
+/*    fields.append(conv<ZZ>(9851L));
+    fields.append(conv<ZZ>(9907L));
+    fields.append(conv<ZZ>(9929L));
+
+    ZZ_pPush push();
+    ZZ_p::init(fields[0]);
+    ZZ_pX polynimial1;
+    SetCoeff(polynimial1, 0, conv<ZZ_p>(4716L));
+    SetCoeff(polynimial1, 1, conv<ZZ_p>(6752L));
+    SetCoeff(polynimial1, 2, conv<ZZ_p>(4458L));
+    polynimial1.normalize();
+    roots.append(polynimial1);
+    ZZ_pPush push();
+    ZZ_p::init(fields[1]);
+    ZZ_pX polynimial2;
+    SetCoeff(polynimial2, 0, conv<ZZ_p>(6847L));
+    SetCoeff(polynimial2, 1, conv<ZZ_p>(3088L));
+    SetCoeff(polynimial2, 2, conv<ZZ_p>(1218L));
+    polynimial2.normalize();
+    roots.append(polynimial2);
+    ZZ_pPush push();
+    ZZ_p::init(fields[2]);
+    ZZ_pX polynimial3;
+    SetCoeff(polynimial3, 0, conv<ZZ_p>(1257L));
+    SetCoeff(polynimial3, 1, conv<ZZ_p>(1168L));
+    SetCoeff(polynimial3, 2, conv<ZZ_p>(2141L));
+    polynimial3.normalize();
+    roots.append(polynimial3);
+
+    m = 31L;
+    poly[0] = 8L;
+    poly[1] = 29L;
+    poly[2] = 15L;
+    poly[3] = 1L;
+    result.append(Pair<long, long>(-8, 3));
+    result.append(Pair<long, long>(-8, 7));
+    result.append(Pair<long, long>(-5, 2));
+    result.append(Pair<long, long>(-2, 1));
+    result.append(Pair<long, long>(2, 1));
+    result.append(Pair<long, long>(2, 3));
+    result.append(Pair<long, long>(4, 1));
+    result.append(Pair<long, long>(4, 11));
+    result.append(Pair<long, long>(11, 7));
+    result.append(Pair<long, long>(13, 1));
+    result.append(Pair<long, long>(19, 4));
+    result.append(Pair<long, long>(24, 55));
+    result.append(Pair<long, long>(25, 2));
+    result.append(Pair<long, long>(44, 9));
+    result.append(Pair<long, long>(104, 1));
+    result.append(Pair<long, long>(119, 11));
+    std::cout << "pairs, multiplication of which gives a square: " << result << '\n';
+    std::cout << "fields: " << fields << '\n';
+    roots.append(ShanksTonelli(fields[0], result, poly, degree));
+    roots.append(ShanksTonelli(fields[1], result, poly, degree));
+    roots.append(ShanksTonelli(fields[2], result, poly, degree));
+    std::cout << "roots: " << roots << '\n';*/
+
+    ZZ x = ChineeseRemainder(fields, roots, m, n);
+    ZZ y = computeY(result, poly, m, n);
+    std::cout << "x = " << x << " y = " << y << '\n';
 
     auto diff = std::chrono::system_clock::now() - start;
     auto sec = std::chrono::duration_cast<std::chrono::seconds>(diff);
