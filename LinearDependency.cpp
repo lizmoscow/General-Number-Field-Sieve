@@ -2,22 +2,32 @@
 // Created by Moskovskaya Elizaveta on 19/05/2017.
 //
 #include <NTL/ZZXFactoring.h>
+#include <NTL/mat_ZZ_p.h>
 #include <NTL/mat_GF2.h>
 #include <vector>
+//#include <linbox/matrix/sparse-matrix.h>
+//#include "fillExpSpMatrix.h"
 
 #include "gauss.h"
 #include "norm.h"
 
 using namespace NTL;
 
-void fillExpMatrix(mat_GF2& matrix, const Vec<Pair<long, long>>& answer,
+typedef mat_GF2 mat_;
+typedef vec_GF2 vec_;
+typedef GF2 type_;
+const ZZ F(8L);
+
+void fillExpMatrix(mat_& matrix, const Vec<Pair<long, long>>& answer,
                    const Vec<Pair<ZZ, ZZ>>& RFB, const Vec<Pair<ZZ, ZZ>>& AFB, const Vec<Pair<ZZ, ZZ>>& QCFB,
                    const ZZX& poly, const ZZ& m, long d) {
     for (long i = 0L; i < answer.length(); ++i) {
+        ZZ_pPush push();
+        ZZ_p::init(F);
         ZZ s = answer[i].a + m * answer[i].b;
         ZZ n = norm(answer[i].a, answer[i].b, m, poly, d);
         if (s < 0L) {
-            matrix[i][0] = GF2(1L);
+            matrix[0][i] = type_(1L);
         }
         for (long j = 0L; j < RFB.length(); ++j) {
             long k = 0L;
@@ -25,7 +35,7 @@ void fillExpMatrix(mat_GF2& matrix, const Vec<Pair<long, long>>& answer,
                 ++k;
                 s /= RFB[j].b;
             }
-            matrix[i][j + 1] = GF2(k);
+            matrix[j + 1][i] = type_(k % 2);
         }
         for (long j = 0L; j < AFB.length(); ++j) {
             long k = 0L;
@@ -35,24 +45,63 @@ void fillExpMatrix(mat_GF2& matrix, const Vec<Pair<long, long>>& answer,
                     n /= AFB[j].b;
                 }
             }
-            matrix[i][j + RFB.length() + 1] = GF2(k);
+            matrix[j + RFB.length() + 1][i] = type_(k % 2);
         }
         for (int j = 0L; j < QCFB.length(); ++j) {
             ZZ_p::init(QCFB[j].b);
             if (power(conv<ZZ_p>(answer[i].a + QCFB[j].a * answer[i].b), (QCFB[j].b - 1) / 2) != 1) {
-                matrix[i][j + AFB.length() + RFB.length() + 1] = GF2(1L);
+                matrix[j + AFB.length() + RFB.length() + 1][i] = type_(1L);
             }
         }
     }
 }
 
-bool gauss (mat_GF2& matrix, vec_GF2 & ans) {
+//typedef Givaro::Modular<short> Field;
+/*void fillExpSpMatrix(LinBox::SparseMatrix<Givaro::Modular<short>>& matrix, const Vec<Pair<long, long>>& answer,
+                   const Vec<Pair<ZZ, ZZ>>& RFB, const Vec<Pair<ZZ, ZZ>>& AFB, const Vec<Pair<ZZ, ZZ>>& QCFB,
+                   const ZZX& poly, const ZZ& m, long degree) {
+
+    Givaro::Modular<short> f(2);
+    for (long i = 0L; i < answer.length(); ++i) {
+        ZZ s = answer[i].a + m * answer[i].b;
+        ZZ n = norm(answer[i].a, answer[i].b, m, poly, degree);
+        if (s < 0L) {
+            matrix.setEntry(0, i, 1);
+        }
+        for (long j = 0L; j < RFB.length(); ++j) {
+            long k = 0L;
+            while (s != 0 && s % RFB[j].b == 0) {
+                ++k;
+                s /= RFB[j].b;
+            }
+            matrix.setEntry(j + 1, i, k % 2);
+        }
+        for (long j = 0L; j < AFB.length(); ++j) {
+            long k = 0L;
+            if ((answer[i].a + AFB[j].a * answer[i].b) % AFB[j].b == 0) {
+                while (n != 0 && n % AFB[j].b == 0) {
+                    ++k;
+                    n /= AFB[j].b;
+                }
+            }
+            matrix.setEntry(j + RFB.length() + 1, i, k % 2);
+        }
+        for (int j = 0L; j < QCFB.length(); ++j) {
+            ZZ_p::init(QCFB[j].b);
+            if (power(conv<ZZ_p>(answer[i].a + QCFB[j].a * answer[i].b), (QCFB[j].b - 1) / 2) != 1) {
+                matrix.setEntry(j + AFB.length() + RFB.length() + 1, i, 1);
+            }
+        }
+    }
+}*/
+
+bool gauss (mat_GF2& matrix, vec_GF2 & ans, long s) {
     long m = matrix.NumCols();
     long n = matrix.NumRows();
-    for (long col=0, row=0; col<m && row<n; ++col) {
-        for (long i=row; i<n; ++i) {
+    std::vector<long> where(m, -1);
+    for (long col = 0, row = 0; col < m && row < n; ++col) {
+        for (long i = row; i < n; ++i) {
             if (!IsZero(matrix[i][col])) {
-                ans[i] = 1;
                 swap (matrix[i], matrix[row]);
                 break;
             }
@@ -61,12 +110,167 @@ bool gauss (mat_GF2& matrix, vec_GF2 & ans) {
         if (IsZero(matrix[row][col])) {
             continue;
         }
-        for (int i=0; i<n; ++i) {
+        where[col] = row;
+
+        for (long i = 0; i < n; ++i) {
             if (i != row && !IsZero(matrix[i][col])) {
                 matrix[i] += matrix[row];
             }
 
         }
         ++row;
+    }
+    long adressIndependent = 0;
+    long skipped = 0;
+    for (long i = 0; i < m; ++i) {
+        if (where[i] == -1) {
+            for (long j = 0; j < n; ++j) {
+                if (!IsZero(matrix[j][i])) {
+                    adressIndependent = i;
+                    if (skipped < s) {
+                        ++skipped;
+                        ++i;
+                    }
+                    else {
+                        i = m;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    for (long i = 0; i < m; ++i) {
+        if (where[i] != -1) {
+            ans[i] = matrix[where[i]][adressIndependent];
+        }
+        else {
+            if (i == adressIndependent) {
+                ans[i] = GF2(1);
+            }
+            else {
+                ans[i] = GF2(0);
+            }
+        }
+    }
+}
+
+
+void mulDiag(mat_ &res, const mat_ &matrix, const vec_ & diag) {
+    if (matrix.NumCols() != diag.length()) {
+        throw "Given vector does not have an appropriate length!";
+    }
+    for (long i = 0; i < matrix.NumRows(); ++i) {
+        for (long j = 0; j < matrix.NumCols(); ++j) {
+            res[i][j] = matrix[i][j] * diag[j];
+        }
+    }
+}
+
+type_ scalar(const mat_ &a, const mat_ &b) {
+    mat_ res;
+    mul(res, transpose(a), b);
+    return res[0][0];
+}
+
+
+bool helpLanczos(vec_ &x, const mat_ &a, const vec_ &b) {
+    Vec<vec_> w;
+    w.append(b);
+    //std::cerr << w[0] << "\n";
+    long count = 0;
+
+
+    vec_ wTemp;
+    wTemp.SetLength(a.NumRows());
+    vec_ alpha1, alpha2;
+    type_ numerator, denominator;
+    wTemp = a * w[count];
+    alpha1 =  a * w[count];
+    alpha2 = a * w[count];
+    numerator = alpha1 * alpha2;
+    alpha1 = w[count];
+    alpha2 = a * w[count];
+    denominator = alpha1 * alpha2;
+    if (IsZero(denominator)) {
+        return false;
+    }
+    wTemp -= numerator / denominator * w[count];
+    w.append(wTemp);
+    //std::cerr << w[1] << "\n";
+    ++count;
+
+    type_ res = w[count] * a * w[count];
+    while (!IsZero(res)) {
+        mul(wTemp, a, w[count]);
+        for (long i = 0; i <= 1; ++i) {
+            alpha1 = a * w[count - i];
+            alpha2 = a * w[count - i];
+            numerator = alpha1 * alpha2;
+            alpha1 = w[count - i];
+            alpha2 = a * w[count - i];
+            denominator = alpha1 * alpha2;
+            if (IsZero(denominator)) {
+                return false;
+            }
+            wTemp -= numerator / denominator * w[count - i];
+        }
+        w.append(wTemp);
+        ++count;
+        res = w[count] * a * w[count];
+    }
+    if (!IsZero(w[count])) {
+        return false;
+    }
+    std::cerr << x.length() << " " << w[0].length() << " " << w[1].length() << '\n';
+    for (long i = 0; i < count - 1; ++i) {
+        x += (w[i] * b) / (w[i] * w[i]) * w[i];
+    }
+    return true;
+}
+
+
+void lanczos(const mat_ &matrix, vec_ &x) {
+    ZZ_pPush push();
+    ZZ_p::init(F);
+    long n = matrix.NumRows();
+    long m = matrix.NumCols();
+    vec_ b0, b;
+    b0.SetLength(n);
+    for (long i = 0; i < n; ++i) {
+        b0[i] =  - matrix[i][m - 1];
+    }
+    vec_ xx;
+    xx.SetLength(m);
+
+    while (true) {
+        mat_ a = transpose(matrix);
+        b = b0;
+        vec_ d;
+        d.SetLength(n);
+        /*for (long i = 0; i < d.length(); ++i) {
+            d[i] = ZZ_p(rand() % 2);
+        }*/
+        for(long i = 0; i < n; ++i)
+        {
+            do
+            {
+                d[i] = random_GF2();
+            }
+            while(IsZero(d[i]));
+            //sqr(D[i], D[i]);
+        }
+        mulDiag(a, a, d);
+        //std::cerr << a.NumRows() << " x " << a.NumCols() << " " << d.length() << " x " << d.length() << " " << b.length();
+        b = a * b;
+        mul(a, a, matrix);
+        if (helpLanczos(xx, a, b)) {
+            std::cout << matrix << "\n" << xx << "\n" << b0 << "\n" << a << "\n" << b << "\n";
+            vec_ cmp;
+            cmp = matrix * xx;
+            if (cmp == b0) {
+                x = xx;
+                return;
+            }
+        }
     }
 }
