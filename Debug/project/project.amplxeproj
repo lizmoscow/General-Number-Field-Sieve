@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+ <connectionOption type="string">get-commandline-localhost:Linux@skylake</connectionOption>
+ <rdmgr>
+  <timestamp type="u64_t">1497989414</timestamp>
+  <hostname type="string">Moskovskayas-MacBook-Air.local</hostname>
+  <os type="string">macosx</os>
+  <product type="string">Intel® VTune™ Amplifier XE 2017 Update 3</product>
+  <buildNumber type="s32_t">510739</buildNumber>
+  <logicalCPUCount type="s32_t">4</logicalCPUCount>
+  <CPUFrequency type="s64_t">0</CPUFrequency>
+  <CPUFamily type="s32_t">0</CPUFamily>
+  <CPUModel type="s32_t">0</CPUModel>
+  <CPUStepping type="s32_t">0</CPUStepping>
+  <CPUBrandName type="string"></CPUBrandName>
+ </rdmgr>
+ <All_Configurations-All_Platforms>
+  <target_settings>
+   <selected_workload>
+    <ssh type="string">launch</ssh>
+    <localhostemulator type="string">launch</localhostemulator>
+    <micemulator type="string">launch</micemulator>
+   </selected_workload>
+   <result_dir>
+    <ssh type="string">/Users/liza_moskovskaya/General-Number-Field-Sieve/Debug/project</ssh>
+    <micemulator type="string">/Users/liza_moskovskaya/General-Number-Field-Sieve/Debug/project</micemulator>
+    <localhostemulator type="string">/Users/liza_moskovskaya/General-Number-Field-Sieve/Debug/project</localhostemulator>
+   </result_dir>
+   <workloads>
+    <localhostemulator>
+     <launch type="pointer" type_id="dasID_cctrl2::ApplicationWorkload" ptr_type="dasID_cctrl2::IWorkload">
+      <workload>
+       <targetName type="string">launch</targetName>
+       <use_app_dir_as_work_dir type="bool">true</use_app_dir_as_work_dir>
+       <launch_app.inherit_sys_environment type="bool">true</launch_app.inherit_sys_environment>
+       <launch.userapppath type="string">/Users/liza_moskovskaya/General-Number-Field-Sieve/Debug/gnfs</launch.userapppath>
+       <launch_app.app_to_launch type="string">/Users/liza_moskovskaya/General-Number-Field-Sieve/Debug/gnfs</launch_app.app_to_launch>
+       <launch.userappworkdir type="string"></launch.userappworkdir>
+       <launch_app.mpi_run type="bool">false</launch_app.mpi_run>
+       <launch_app.mpi_max_rank type="null"></launch_app.mpi_max_rank>
+       <launch_app.mpi_result_path type="string"></launch_app.mpi_result_path>
+       <result_directory.path type="string">/Users/liza_moskovskaya/General-Number-Field-Sieve/Debug/project/r@@@{at}</result_directory.path>
+       <launch_app.working_folder type="string">/Users/liza_moskovskaya/General-Number-Field-Sieve/Debug</launch_app.working_folder>
+       <search_directories type="bag"/>
+       <context>
+        <contextValue>
+         <id type="string">allowMultipleRuns</id>
+         <value type="bool">false</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">analyzeKvmGuest</id>
+         <value type="bool">false</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">analyzeSystemWide</id>
+         <value type="bool">false</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">cpuMask</id>
+         <value type="string"></value>
+        </contextValue>
+        <contextValue>
+         <id type="string">customCollector</id>
+         <value type="string"></value>
+        </contextValue>
+        <contextValue>
+         <id type="string">dataLimit</id>
+         <value type="s32_t">500</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">enableRing</id>
+         <value type="bool">false</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">finalizationModeskylake</id>
+         <value type="string">full</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">followChild</id>
+         <value type="bool">true</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">followChildStrategy</id>
+         <value type="string"></value>
+        </contextValue>
+        <contextValue>
+         <id type="string">groupForFinalizationControlskylake</id>
+         <value type="null"></value>
+        </contextValue>
+        <contextValue>
+         <id type="string">kvmGuestKallsyms</id>
+         <value type="string"></value>
+        </contextValue>
+        <contextValue>
+         <id type="string">kvmGuestModules</id>
+         <value type="string"></value>
+        </contextValue>
+        <contextValue>
+         <id type="string">kvmProfileGuest</id>
+         <value type="null"></value>
+        </contextValue>
+        <contextValue>
+         <id type="string">mrteMode</id>
+         <value type="string">auto</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">targetDurationType</id>
+         <value type="string">short</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">targetRingBuffer</id>
+         <value type="s32_t">0</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">targetType</id>
+         <value type="string">launch</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">tracingMode</id>
+         <value type="null"></value>
+        </contextValue>
+       </context>
+      </workload>
+     </launch>
+     <system type="pointer" type_id="dasID_cctrl2::SystemWideWorkload" ptr_type="dasID_cctrl2::IWorkload">
+      <workload>
+       <targetName type="string">system</targetName>
+       <use_app_dir_as_work_dir type="bool">false</use_app_dir_as_work_dir>
+       <result_directory.path type="string">/Users/liza_moskovskaya/General-Number-Field-Sieve/Debug/project/r@@@{at}</result_directory.path>
+       <search_directories type="bag"/>
+       <context>
+        <contextValue>
+         <id type="string">allowMultipleRuns</id>
+         <value type="bool">false</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">analyzeKvmGuest</id>
+         <value type="bool">false</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">cpuMask</id>
+         <value type="string"></value>
+        </contextValue>
+        <contextValue>
+         <id type="string">customCollector</id>
+         <value type="string"></value>
+        </contextValue>
+        <contextValue>
+         <id type="string">dataLimit</id>
+         <value type="s32_t">500</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">enableRing</id>
+         <value type="bool">false</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">finalizationModeskylake</id>
+         <value type="string">full</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">followChild</id>
+         <value type="bool">true</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">groupForFinalizationControlskylake</id>
+         <value type="null"></value>
+        </contextValue>
+        <contextValue>
+         <id type="string">kvmGuestKallsyms</id>
+         <value type="string"></value>
+        </contextValue>
+        <contextValue>
+         <id type="string">kvmGuestModules</id>
+         <value type="string"></value>
+        </contextValue>
+        <contextValue>
+         <id type="string">kvmProfileGuest</id>
+         <value type="null"></value>
+        </contextValue>
+        <contextValue>
+         <id type="string">mrteMode</id>
+         <value type="string">native</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">targetDurationType</id>
+         <value type="string">short</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">targetRingBuffer</id>
+         <value type="s32_t">0</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">targetType</id>
+         <value type="string">system</value>
+        </contextValue>
+        <contextValue>
+         <id type="string">tracingMode</id>
+         <value type="null"></value>
+        </contextValue>
+       </context>
+      </workload>
+     </system>
+    </localhostemulator>
+   </workloads>
+  </target_settings>
+  <analysis_type_settings>
+   <selected_analysis_type_path type="string">/Applications/Intel VTune Amplifier XE 2017.app/Contents/config/analysis_type/advanced_hotspots.cfg</selected_analysis_type_path>
+  </analysis_type_settings>
+ </All_Configurations-All_Platforms>
+ <contextValues>
+  <contextValue>
+   <id type="string">pmuId</id>
+   <value type="string">skylake</value>
+  </contextValue>
+  <contextValue>
+   <id type="string">targetOS</id>
+   <value type="string">Linux</value>
+  </contextValue>
+ </contextValues>
+</root>

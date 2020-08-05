@@ -10,7 +10,7 @@
 
 using namespace NTL;
 
-ZZ fieldF(ZZ &prev, ZZX &poly) {
+ZZ fieldF(const ZZ &prev, const ZZX &poly) {
     ZZ myPrime(NextPrime(prev + 1));
 
     ZZ_pX one;
@@ -43,7 +43,7 @@ ZZ fieldF(ZZ &prev, ZZX &poly) {
 }
 
 
-long logOrder(ZZ& field, ZZX& poly, ZZ_pE& lambda) {
+long logOrder(const ZZ& field, const ZZX& poly, const ZZ_pE& lambda) {
     ZZ_pX uno;
     SetCoeff(uno, 0);
     uno.normalize();
@@ -63,7 +63,7 @@ long logOrder(ZZ& field, ZZX& poly, ZZ_pE& lambda) {
     return 0;
 }
 
-long order(ZZ& field, ZZX& poly, ZZ_pE& lambda) {
+long order(const ZZ& field, const ZZX& poly, const ZZ_pE& lambda) {
     ZZ_pX uno;
     SetCoeff(uno, 0);
     uno.normalize();
@@ -84,7 +84,7 @@ long order(ZZ& field, ZZX& poly, ZZ_pE& lambda) {
 
 
 
-ZZ_pX ShanksTonelli(ZZ& field, const Vec<Pair<long, long>>& pairs, ZZX& poly, long d) {
+ZZ_pX ShanksTonelli(const ZZ& field, const Vec<Pair<long, long>>& pairs, const ZZX& poly, long d) {
     ZZ_pPush push;
     ZZ_p::init(field);
     ZZX dpoly2 = conv<ZZX>(sqr(diff(poly)));
@@ -157,21 +157,17 @@ ZZ_pX ShanksTonelli(ZZ& field, const Vec<Pair<long, long>>& pairs, ZZX& poly, lo
 }
 
 
-void fieldsFinder(Vec<ZZ> &fields, Vec<ZZ_pX> &roots, ZZX &poly, Vec<Pair<long, long>> &pairs, ZZ &n, long d) {
+void fieldsFinder(Vec<ZZ> &fields, const ZZX &poly, const ZZ &n) {
     ZZ field(9800L);
     ZZ mul(1L);
-    while (mul < n && fields.length() < 3) {
+    while (mul < n) {
         field = fieldF(field, poly);
-        ZZ_pX nu = ShanksTonelli(field, pairs, poly, d);
-        if (!IsZero(nu)) {
-            fields.append(field);
-            roots.append(nu);
-            mul *= field;
-        }
+        fields.append(field);
+        mul *= field;
     }
 }
 
-ZZ eval(ZZX &poly, ZZ &x) {
+ZZ eval(const ZZX &poly, const ZZ &x) {
     ZZ res(0L);
     for (long i = 0; i <= deg(poly); ++i) {
         res += poly[i] * power(x, i);
@@ -179,7 +175,7 @@ ZZ eval(ZZX &poly, ZZ &x) {
     return res;
 }
 
-ZZ ChineeseRemainder(Vec<ZZ> &fields, Vec<ZZ_pX> &roots, ZZ &m, ZZ&n) {
+ZZ ChineeseRemainder(const Vec<ZZ> &fields, const Vec<ZZ_pX> &roots, const ZZ &m, const ZZ&n) {
     ZZ p(1L);
     for (long i = 0; i < fields.length(); ++i) {
         p *= fields[i];
@@ -208,10 +204,7 @@ ZZ ChineeseRemainder(Vec<ZZ> &fields, Vec<ZZ_pX> &roots, ZZ &m, ZZ&n) {
 }
 
 
-
-
-
-ZZ computeY(const Vec<Pair<long, long>> &pairs, ZZX &poly, ZZ &m, ZZ &n) {
+ZZ computeY(const Vec<Pair<long, long>> &pairs, const ZZX &poly, const ZZ &m, const ZZ &n) {
     ZZ y1(1L);
     for (long i = 0; i < pairs.length(); ++i) {
         y1 *= pairs[i].a + pairs[i].b * m;

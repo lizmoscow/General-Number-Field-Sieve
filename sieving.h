@@ -5,7 +5,7 @@
 #ifndef GENERAL_NUMBER_FIELD_SIEVE_SIEVING_H
 #define GENERAL_NUMBER_FIELD_SIEVE_SIEVING_H
 
-NTL::Vec<NTL::Pair<long, long>> sieving(const NTL::Vec<NTL::Pair<NTL::ZZ, NTL::ZZ>>& RFB,
+void sieving(NTL::Vec<NTL::Pair<long, long>> &answer, const NTL::Vec<NTL::Pair<NTL::ZZ, NTL::ZZ>>& RFB,
                                         const NTL::Vec<NTL::Pair<NTL::ZZ, NTL::ZZ>>& AFB,
                                         long B, const NTL::ZZ& m, const NTL::ZZX& poly,
                                         long degree, long minPairAmount);

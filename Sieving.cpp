@@ -81,25 +81,25 @@ void sieve(Vec<Pair<long, long>>& pairs, const Vec<Pair<ZZ, ZZ>>& FB, Vec<ZZ>& s
     }
 }
 
-Vec<Pair<long, long>> sieving(const Vec<Pair<ZZ, ZZ>>& RFB, const Vec<Pair<ZZ, ZZ>>& AFB,
+void sieving(Vec<Pair<long, long>> &answer, const Vec<Pair<ZZ, ZZ>>& RFB, const Vec<Pair<ZZ, ZZ>>& AFB,
                           long B, const ZZ& m, const ZZX& poly, long degree, long minPairAmount) {
     ZZ (*prSieveArrayInit) (long, long, const ZZ&, const ZZX&, long) = &AplusMxB;
     ZZ (*paSieveArrayInit) (long, long, const ZZ&, const ZZX&, long) = &norm;
     bool (*cmp)(const Pair<long, long>&, const Pair<long, long>&) = &compare;
-
-    Vec<Pair<long, long>> answer;
 
     Vec<ZZ> sievingArray;
     sievingArray.SetLength(2 * B + 1);
 
     long b = 1L;
 
+    Vec<Pair<long, long>> rationalRes;
+    Vec<Pair<long, long>> algebraicRes;
     while (answer.length() < minPairAmount) {
-        Vec<Pair<long, long>> rationalRes;
+        rationalRes = Vec<Pair<long, long>>();
         arrayInit(sievingArray, B, m, poly, degree, b, prSieveArrayInit);
         sieve(rationalRes, RFB, sievingArray, B, b);
 
-        Vec<Pair<long, long>> algebraicRes;
+        algebraicRes = Vec<Pair<long, long>>();
         arrayInit(sievingArray, B, m, poly, degree, b, paSieveArrayInit);
         sieve(algebraicRes, AFB, sievingArray, B, b);
 
@@ -108,6 +108,5 @@ Vec<Pair<long, long>> sieving(const Vec<Pair<ZZ, ZZ>>& RFB, const Vec<Pair<ZZ, Z
         ++b;
     }
 
-    return answer;
 }
 

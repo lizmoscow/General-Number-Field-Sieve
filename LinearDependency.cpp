@@ -5,8 +5,6 @@
 #include <NTL/mat_ZZ_p.h>
 #include <NTL/mat_GF2.h>
 #include <vector>
-//#include <linbox/matrix/sparse-matrix.h>
-//#include "fillExpSpMatrix.h"
 
 #include "gauss.h"
 #include "norm.h"
@@ -56,46 +54,7 @@ void fillExpMatrix(mat_& matrix, const Vec<Pair<long, long>>& answer,
     }
 }
 
-//typedef Givaro::Modular<short> Field;
-/*void fillExpSpMatrix(LinBox::SparseMatrix<Givaro::Modular<short>>& matrix, const Vec<Pair<long, long>>& answer,
-                   const Vec<Pair<ZZ, ZZ>>& RFB, const Vec<Pair<ZZ, ZZ>>& AFB, const Vec<Pair<ZZ, ZZ>>& QCFB,
-                   const ZZX& poly, const ZZ& m, long degree) {
-
-    Givaro::Modular<short> f(2);
-    for (long i = 0L; i < answer.length(); ++i) {
-        ZZ s = answer[i].a + m * answer[i].b;
-        ZZ n = norm(answer[i].a, answer[i].b, m, poly, degree);
-        if (s < 0L) {
-            matrix.setEntry(0, i, 1);
-        }
-        for (long j = 0L; j < RFB.length(); ++j) {
-            long k = 0L;
-            while (s != 0 && s % RFB[j].b == 0) {
-                ++k;
-                s /= RFB[j].b;
-            }
-            matrix.setEntry(j + 1, i, k % 2);
-        }
-        for (long j = 0L; j < AFB.length(); ++j) {
-            long k = 0L;
-            if ((answer[i].a + AFB[j].a * answer[i].b) % AFB[j].b == 0) {
-                while (n != 0 && n % AFB[j].b == 0) {
-                    ++k;
-                    n /= AFB[j].b;
-                }
-            }
-            matrix.setEntry(j + RFB.length() + 1, i, k % 2);
-        }
-        for (int j = 0L; j < QCFB.length(); ++j) {
-            ZZ_p::init(QCFB[j].b);
-            if (power(conv<ZZ_p>(answer[i].a + QCFB[j].a * answer[i].b), (QCFB[j].b - 1) / 2) != 1) {
-                matrix.setEntry(j + AFB.length() + RFB.length() + 1, i, 1);
-            }
-        }
-    }
-}*/
-
-bool gauss (mat_GF2& matrix, vec_GF2 & ans, long s) {
+void gauss (mat_GF2& matrix, Vec<vec_GF2> &vecs) {
     long m = matrix.NumCols();
     long n = matrix.NumRows();
     std::vector<long> where(m, -1);
@@ -120,35 +79,38 @@ bool gauss (mat_GF2& matrix, vec_GF2 & ans, long s) {
         }
         ++row;
     }
-    long adressIndependent = 0;
-    long skipped = 0;
+
+    vec_GF2 vec;
+    vec.SetLength(m);
     for (long i = 0; i < m; ++i) {
         if (where[i] == -1) {
-            for (long j = 0; j < n; ++j) {
-                if (!IsZero(matrix[j][i])) {
-                    adressIndependent = i;
-                    if (skipped < s) {
-                        ++skipped;
-                        ++i;
-                    }
-                    else {
-                        i = m;
-                        break;
+            clear(vec);
+            for (long j = 0; j < m; ++j) {
+                if (where[j] != -1) {
+                    vec[j] = matrix[where[j]][i];
+                }
+                else {
+                    if (j == i) {
+                        vec[j] = GF2(1);
                     }
                 }
             }
+            vecs.append(vec);
         }
     }
-    for (long i = 0; i < m; ++i) {
-        if (where[i] != -1) {
-            ans[i] = matrix[where[i]][adressIndependent];
-        }
-        else {
-            if (i == adressIndependent) {
-                ans[i] = GF2(1);
-            }
-            else {
-                ans[i] = GF2(0);
+
+}
+
+
+void randComb(const Vec<vec_GF2> &vecs, vec_GF2 &ans) {
+    vec_GF2 randomCombination;
+    random(randomCombination, vecs.length());
+
+    for (long i = 0; i < vecs[0].length(); ++i) {
+        ans[i] = GF2(0);
+        for (long j = 0; j < vecs.length(); ++j) {
+            if (!IsZero(randomCombination[j])) {
+                ans[i] += randomCombination[j] * vecs[j][i];
             }
         }
     }
@@ -165,13 +127,6 @@ void mulDiag(mat_ &res, const mat_ &matrix, const vec_ & diag) {
         }
     }
 }
-
-type_ scalar(const mat_ &a, const mat_ &b) {
-    mat_ res;
-    mul(res, transpose(a), b);
-    return res[0][0];
-}
-
 
 bool helpLanczos(vec_ &x, const mat_ &a, const vec_ &b) {
     Vec<vec_> w;
@@ -227,7 +182,6 @@ bool helpLanczos(vec_ &x, const mat_ &a, const vec_ &b) {
     }
     return true;
 }
-
 
 void lanczos(const mat_ &matrix, vec_ &x) {
     ZZ_pPush push();

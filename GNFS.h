@@ -1,0 +1,10 @@
+//
+// Created by Moskovskaya Elizaveta on 19/06/2017.
+//
+
+#ifndef GENERAL_NUMBER_FIELD_SIEVE_SPLIT_H
+#define GENERAL_NUMBER_FIELD_SIEVE_SPLIT_H
+
+NTL::ZZ GNFS(const NTL::ZZ &n);
+
+#endif //GENERAL_NUMBER_FIELD_SIEVE_SPLIT_H

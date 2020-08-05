@@ -5,7 +5,6 @@
 #ifndef GENERAL_NUMBER_FIELD_SIEVE_GAUSS_H
 #define GENERAL_NUMBER_FIELD_SIEVE_GAUSS_H
 
-bool gauss (NTL::mat_GF2&, NTL::vec_GF2&, long);
-const int INF = 1000;
+void gauss (NTL::mat_GF2& matrix, NTL::Vec<NTL::vec_GF2> &vecs);
 
 #endif //GENERAL_NUMBER_FIELD_SIEVE_GAUSS_H
